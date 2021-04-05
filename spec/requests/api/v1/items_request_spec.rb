@@ -29,4 +29,22 @@ RSpec.describe "Items API" do
     items = JSON.parse(response.body, symbolize_names: true)
     expect(items).to be_empty
   end
+  it "returns one item by the id" do
+    merchant = create(:merchant)
+    id = create(:item, merchant_id: merchant.id).id
+    get "/api/v1/items/#{id}"
+    item = JSON.parse(response.body, symbolize_names: true)
+    expect(response).to be_successful
+    expect(item).to have_key(:id)
+    expect(item[:id]).to eq(id)
+    expect(item).to have_key(:merchant_id)
+    expect(item[:merchant_id]).to be_a(Integer)
+    expect(item[:merchant_id]).to eq(merchant.id)
+    expect(item).to have_key(:name)
+    expect(item[:name]).to be_a(String)
+    expect(item).to have_key(:description)
+    expect(item[:description]).to be_a(String)
+    expect(item).to have_key(:unit_price)
+    expect(item[:unit_price]).to be_a(Float)
+  end
 end
