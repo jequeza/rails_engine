@@ -23,4 +23,10 @@ RSpec.describe "Items API" do
       expect(item[:merchant_id]).to be_a(Integer)
     end
   end
+  it "returns empty array if no records" do
+    get '/api/v1/items'
+    expect(response).to be_successful
+    items = JSON.parse(response.body, symbolize_names: true)
+    expect(items).to be_empty
+  end
 end

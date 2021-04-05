@@ -14,4 +14,10 @@ RSpec.describe "Merchants API" do
       expect(merchant[:name]).to be_a(String)
     end
   end
+  it "returns empty array if no records" do
+    get '/api/v1/merchants'
+    expect(response).to be_successful
+    merchants = JSON.parse(response.body, symbolize_names: true)
+    expect(merchants).to be_empty
+  end
 end
