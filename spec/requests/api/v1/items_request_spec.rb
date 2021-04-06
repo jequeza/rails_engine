@@ -67,7 +67,6 @@ RSpec.describe "Items API" do
     id = create(:item, merchant_id: merchant.id).id
     previous_name = Item.last.name
     previous_description = Item.last.description
-
     item_params = { name: "Hello World", description: "Awesome World!"}
     headers = {"CONTENT_TYPE" => "application/json"}
 
@@ -79,5 +78,12 @@ RSpec.describe "Items API" do
     expect(item.description).to_not eq(previous_description)
     expect(item.name).to eq(item_params[:name])
     expect(item.description).to eq(item_params[:description])
+  end
+  it "can delete an item" do
+    merchant = create(:merchant)
+    item = create(:item, merchant_id: merchant.id)
+    expect{ delete "/api/v1/items/#{item.id}" }.to change(Item, :count).by(-1)
+    expect(response).to be_successful
+    expect{Item.find(item.id)}.to raise_error(ActiveRecord::RecordNotFound)
   end
 end
