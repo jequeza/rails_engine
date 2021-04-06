@@ -12,7 +12,7 @@ RSpec.describe "Items API" do
     expect(items[:data].count).to eq(30)
     items[:data].each do |item|
       expect(item).to have_key(:id)
-      expect(item[:id]).to be_an(Integer)
+      expect(item[:id]).to be_a(String)
       expect(item).to have_key(:type)
       expect(item[:type]).to eq("item")
       expect(item[:attributes]).to have_key(:name)
@@ -35,13 +35,13 @@ RSpec.describe "Items API" do
     get "/api/v1/items/#{id}"
     item = JSON.parse(response.body, symbolize_names: true)
     expect(response).to be_successful
-    expect(item[:data].first).to have_key(:id)
-    expect(item[:data].first[:id]).to eq(id)
-    expect(item[:data].first[:attributes]).to have_key(:name)
-    expect(item[:data].first[:attributes][:name]).to be_a(String)
-    expect(item[:data].first[:attributes]).to have_key(:description)
-    expect(item[:data].first[:attributes][:description]).to be_a(String)
-    expect(item[:data].first[:attributes]).to have_key(:unit_price)
-    expect(item[:data].first[:attributes][:unit_price]).to be_a(Float)
+    expect(item[:data]).to have_key(:id)
+    expect(item[:data][:id]).to eq(id.to_s)
+    expect(item[:data][:attributes]).to have_key(:name)
+    expect(item[:data][:attributes][:name]).to be_a(String)
+    expect(item[:data][:attributes]).to have_key(:description)
+    expect(item[:data][:attributes][:description]).to be_a(String)
+    expect(item[:data][:attributes]).to have_key(:unit_price)
+    expect(item[:data][:attributes][:unit_price]).to be_a(Float)
   end
 end
