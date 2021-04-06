@@ -60,6 +60,6 @@ RSpec.describe "Items API" do
     expect(created_item.name).to eq(item_params[:name])
     expect(created_item.description).to eq(item_params[:description])
     expect(created_item.unit_price).to eq(item_params[:unit_price])
-    expect(created_item.merchant_id).to eq(merchant.id.to_s)
+    expect(created_item.merchant_id).to eq(merchant.id)
   end
 end
