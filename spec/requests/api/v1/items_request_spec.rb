@@ -106,4 +106,18 @@ RSpec.describe "Items API" do
     expect(response).to be_successful
     expect{Item.find(item.id)}.to raise_error(ActiveRecord::RecordNotFound)
   end
+  it "can find a single item which matches a search term" do
+    merchant = create(:merchant)
+    gold_ring = create(:item, merchant_id: merchant.id, name: "Gold Ring")
+    silver_ring = create(:item, merchant_id: merchant.id, name: "Silver Ring")
+    mood_ring = create(:item, merchant_id: merchant.id, name: "Mood Ring")
+    diamond_necklace = create(:item, merchant_id: merchant.id, name: "Diamond Necklace")
+    search_term = "neck"
+
+    get "/api/v1/items/find_one?name=#{search_term}"
+
+    expect(response).to be_successful
+    item = JSON.parse(response.body, symbolize_names: true)
+    expect(item[:data][:attributes][:name]).to eq("Diamond Necklace")
+  end
 end
