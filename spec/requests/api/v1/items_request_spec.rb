@@ -133,5 +133,11 @@ RSpec.describe "Items API" do
     item = JSON.parse(response.body, symbolize_names: true)
     expect(item[:data][:attributes][:unit_price]).to be > price
     expect(item[:data][:attributes][:name]).to eq("Gold Ring")
+
+    get "/api/v1/items/find_one?max_price=#{price}"
+    expect(response).to be_successful
+    item = JSON.parse(response.body, symbolize_names: true)
+    expect(item[:data][:attributes][:unit_price]).to be < price
+    expect(item[:data][:attributes][:name]).to eq("Silver Ring")
   end
 end
