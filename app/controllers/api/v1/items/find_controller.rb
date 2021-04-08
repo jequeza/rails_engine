@@ -1,4 +1,4 @@
-class Api::V1::Items::FindOneController < ApplicationController
+class Api::V1::Items::FindController < ApplicationController
   def show
     if params[:min_price] && params[:max_price]
       found_item = Item.find_by_price_range(params[:min_price], params[:max_price])

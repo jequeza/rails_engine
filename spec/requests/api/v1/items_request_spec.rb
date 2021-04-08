@@ -114,7 +114,7 @@ RSpec.describe "Items API" do
     diamond_necklace = create(:item, merchant_id: merchant.id, name: "Diamond Necklace")
     search_term = "neck"
 
-    get "/api/v1/items/find_one?name=#{search_term}"
+    get "/api/v1/items/find?name=#{search_term}"
 
     expect(response).to be_successful
     item = JSON.parse(response.body, symbolize_names: true)
@@ -128,13 +128,13 @@ RSpec.describe "Items API" do
     diamond_necklace = create(:item, merchant_id: merchant.id, name: "Diamond Necklace", unit_price: 2100.99)
     price = 300.0
 
-    get "/api/v1/items/find_one?min_price=#{price}"
+    get "/api/v1/items/find?min_price=#{price}"
     expect(response).to be_successful
     item = JSON.parse(response.body, symbolize_names: true)
     expect(item[:data][:attributes][:unit_price]).to be > price
     expect(item[:data][:attributes][:name]).to eq("Diamond Necklace")
 
-    get "/api/v1/items/find_one?max_price=#{price}"
+    get "/api/v1/items/find?max_price=#{price}"
     expect(response).to be_successful
     item = JSON.parse(response.body, symbolize_names: true)
     expect(item[:data][:attributes][:unit_price]).to be < price
@@ -149,7 +149,7 @@ RSpec.describe "Items API" do
     maximun_price = 900.00
     minimun_price = 150.00
 
-    get "/api/v1/items/find_one?max_price=#{maximun_price}&min_price=#{minimun_price}"
+    get "/api/v1/items/find?max_price=#{maximun_price}&min_price=#{minimun_price}"
 
     expect(response).to be_successful
     item = JSON.parse(response.body, symbolize_names: true)
