@@ -47,4 +47,17 @@ RSpec.describe "Merchants API" do
     expect(merchant[:data][:attributes]).to have_key(:name)
     expect(merchant[:data][:attributes][:name]).to be_a(String)
   end
+  it "returns a list of merchants matching a given name" do
+    merchant1 = create(:merchant, name: "Ingersoll Cutting Tools")
+    merchant2 = create(:merchant, name: "Allied Tooling")
+    merchant3 = create(:merchant, name: "Pro Tools")
+    merchant4 = create(:merchant, name: "Excellent Pools")
+    merchant5 = create(:merchant, name: "BBQ n Stuff")
+    merchant6 = create(:merchant, name: "All-Truck-Parts")
+    get "/api/v1/merchants/find_all?name=ool"
+
+    expect(response).to be_successful
+    merchants = JSON.parse(response.body, symbolize_names: true)
+    expect(merchants[:data].length).to eq(4)
+  end
 end
