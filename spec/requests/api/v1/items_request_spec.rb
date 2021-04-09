@@ -106,4 +106,53 @@ RSpec.describe "Items API" do
     expect(response).to be_successful
     expect{Item.find(item.id)}.to raise_error(ActiveRecord::RecordNotFound)
   end
+  it "can find a single item which matches a search term" do
+    merchant = create(:merchant)
+    gold_ring = create(:item, merchant_id: merchant.id, name: "Gold Ring")
+    silver_ring = create(:item, merchant_id: merchant.id, name: "Silver Ring")
+    mood_ring = create(:item, merchant_id: merchant.id, name: "Mood Ring")
+    diamond_necklace = create(:item, merchant_id: merchant.id, name: "Diamond Necklace")
+    search_term = "neck"
+
+    get "/api/v1/items/find?name=#{search_term}"
+
+    expect(response).to be_successful
+    item = JSON.parse(response.body, symbolize_names: true)
+    expect(item[:data][:attributes][:name]).to eq("Diamond Necklace")
+  end
+  it "can find an item with a minimun and/or maximun price" do
+    merchant = create(:merchant)
+    gold_ring = create(:item, merchant_id: merchant.id, name: "Gold Ring", unit_price: 749.00)
+    silver_ring = create(:item, merchant_id: merchant.id, name: "Silver Ring", unit_price: 200.99)
+    mood_ring = create(:item, merchant_id: merchant.id, name: "Mood Ring", unit_price: 49.99)
+    diamond_necklace = create(:item, merchant_id: merchant.id, name: "Diamond Necklace", unit_price: 2100.99)
+    price = 300.0
+
+    get "/api/v1/items/find?min_price=#{price}"
+    expect(response).to be_successful
+    item = JSON.parse(response.body, symbolize_names: true)
+    expect(item[:data][:attributes][:unit_price]).to be > price
+    expect(item[:data][:attributes][:name]).to eq("Diamond Necklace")
+
+    get "/api/v1/items/find?max_price=#{price}"
+    expect(response).to be_successful
+    item = JSON.parse(response.body, symbolize_names: true)
+    expect(item[:data][:attributes][:unit_price]).to be < price
+    expect(item[:data][:attributes][:name]).to eq("Mood Ring")
+  end
+  it "can find an item with price min and maximun price" do
+    merchant = create(:merchant)
+    gold_ring = create(:item, merchant_id: merchant.id, name: "Gold Ring", unit_price: 749.00)
+    silver_ring = create(:item, merchant_id: merchant.id, name: "Silver Ring", unit_price: 200.99)
+    mood_ring = create(:item, merchant_id: merchant.id, name: "Mood Ring", unit_price: 49.99)
+    diamond_necklace = create(:item, merchant_id: merchant.id, name: "Diamond Necklace", unit_price: 2100.99)
+    maximun_price = 900.00
+    minimun_price = 150.00
+
+    get "/api/v1/items/find?max_price=#{maximun_price}&min_price=#{minimun_price}"
+
+    expect(response).to be_successful
+    item = JSON.parse(response.body, symbolize_names: true)
+    expect(item[:data][:attributes][:name]).to eq(gold_ring.name)
+  end
 end
